@@ -26,10 +26,6 @@ pacman::p_load(
   bslib
 )
 
-
-# load functions
-source("R/fxn_lesions_graphs.R")
-
 # load data
 # denominators
 mall <- import("mall.rds", trust = TRUE) 
@@ -50,8 +46,11 @@ les_variables <- c("lesion", "dd", "footrot", "wld",
                    "other", "axial",
                    "toeulcer", "thin", "inf", "noninf", "toe", "injury")
 
-farms <- "Example"
+farms <- "example"
 
+
+# load functions
+source("R/fxn_lesions_graphs.R")
 
 # set up
 
@@ -113,7 +112,7 @@ server <- function(input, output) {
     region_les_graph(lesions = "lesion",
                      group = "farm",
                      plot_var = farm,
-                     facet_col = year,
+                     facet_col = lestype,
                      years = c(2023),
                      farms = c(farms))
   
