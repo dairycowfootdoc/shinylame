@@ -119,7 +119,7 @@ server <- function(input, output, session) {
     )
     
     # Create the reactive expression to handle the lactation input
-    temp_data <- reactive({
+    graph_data <- reactive({
       lactation_info <- lactation_mapping[[input$lactation]]  # Use input$lactation to get the corresponding values
       lactation_value <- lactation_info$lactation_value
       lact_group <- lactation_info$lact_group
@@ -132,41 +132,9 @@ server <- function(input, output, session) {
     })
     
     output$temp_data_print <- renderPrint({
-      print(temp_data())  # Call temp_data() with parentheses to access the value
+      print(graph_data())  # Call temp_data() with parentheses to access the value
     })
     
-    # Create the graph for any lesions
-    les_graph <- reactive({
-      lactation_info <- lactation_mapping[[input$lactation]]  
-      lactation_value <- lactation_info$lactation_value
-      lact_group <- lactation_info$lact_group
-      
-      region_lesion_sum_data(denominator = mall,
-                             data = lame4,
-                             lctgp = lactation_value,
-                             lact = lact_group,
-                             group = "farm") |> 
-        region_les_graph(lesions = "lesion",
-                         group = "farm",
-                         plot_var = farm,
-                         facet_col = year,
-                         years = c(2023),
-                         farms = c(farms)
-        )
-    })
-    
-    # # Create additional lesion graphs (similar to les_graph for other types)
-    # les_graph_inf <- region_lesion_sum_data(denominator = mall,
-    #                                         data = lame4,
-    #                                         lctgp = all, lact = c(1:20),
-    #                                         group = "farm")  |>
-    #   region_les_graph(lesions = c("footrot", "dd"),
-    #                    group = "farm",
-    #                    plot_var = farm,
-    #                    facet_col = lestype,
-    #                    years = c(2023),
-    #                    farms = c(farms))
-    # 
     les_graph_noninf <- region_lesion_sum_data(denominator = mall,
                                                data = lame4,
                                                lctgp = all, lact = c(1:20),
@@ -179,24 +147,37 @@ server <- function(input, output, session) {
                        farms = c(farms))
     
   output$any <- renderPlot({
-    plot <- les_graph()
-    plot
+    les_graph <- region_les_graph(.data = graph_data(), # need to use () as it's a funtion
+                                             lesions = c("lesion", 
+                                                         "inf", "noninf"),
+                                             group = "farm",
+                                             plot_var = lestype,
+                                             facet_col = year,
+                                             years = c(2023, 2024),
+                                             farms = c(farms))
+    les_graph
     })
   output$inf <- renderPlot({
-    les_graph_inf <- region_les_graph(.data = temp_data(), # need to use () as it's a funtion
+    les_graph_inf <- region_les_graph(.data = graph_data(), # need to use () as it's a funtion
                                       lesions = c("footrot", "dd"),
                                       group = "farm",
-                                      plot_var = farm,
-                                      facet_col = lestype,
-                                      years = c(2023),
+                                      plot_var = lestype,
+                                      facet_col = year,
+                                      years = c(2024),
                                       farms = c(farms))
     les_graph_inf
   })
-  output$noninf <- renderPlot(les_graph_noninf)
-
-
+  output$noninf <- renderPlot({
+    les_graph_noninf <- region_les_graph(.data = graph_data(), # need to use () as it's a funtion
+                                      lesions = c("soleulcer", "solefract", "wld"),
+                                      group = "farm",
+                                      plot_var = lestype,
+                                      facet_col = year,
+                                      years = c(2024),
+                                      farms = c(farms))
+    les_graph_noninf
+    })
 }
-
 
 # Run the application 
 shinyApp(ui = ui, server = server)
