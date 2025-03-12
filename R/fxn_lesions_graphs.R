@@ -1,5 +1,20 @@
 # Graph Lesion data setup
 
+all <- c("l1milking", "l2milking", "l3milking", "l4milking", "l5pmilking")
+one <- c("allmilking", "l2milking", "l3milking", "l4milking", "l5pmilking")
+two <- c("allmilking", "l1milking", "l3milking", "l4milking", "l5pmilking")
+three <- c("allmilking", "l2milking", "l1milking", "l4milking", "l5pmilking")
+four  <- c("allmilking", "l2milking", "l3milking", "l1milking", "l5pmilking")
+five <- c("allmilking", "l2milking", "l3milking", "l4milking", "l1milking")
+
+les_variables <- c("lesion", "dd", "footrot", "wld",
+                   "soleulcer", "solefract", "hem", "cork", 
+                   "other", "axial",
+                   "toeulcer", "thin", "inf", "noninf", "toe", "injury")
+
+farms <- "example"
+
+
 # Year:Lesion occurrence----
 
 region_lesion_sum_data <- function(denominator = mall,
@@ -156,15 +171,15 @@ les_graph <- df %>%
                    y = cases, yend = n1cases, 
                    color = "Repeats"), 
                linewidth = 2) +
-  geom_point(aes(x = x_var, y = cases, color = "All"), size = 6.5) +
+  geom_point(aes(x = x_var, y = cases, color = "All"), size = 8.5) +
   geom_text(aes(x_var, cases, label = round(cases, digits = 1)), 
-            nudge_x = +.01, 
-            color = "white", size = 2.25,
+            #nudge_x = +.01, 
+            color = "white", size = 3.5,
             show.legend = FALSE) +
-  geom_point(aes(x = x_var, y = n1cases, color = "1st"), size = 6.5) +
+  geom_point(aes(x = x_var, y = n1cases, color = "1st"), size = 8.5) +
   geom_text(aes(x_var, n1cases, label = round(n1cases, digits = 1)), 
-            nudge_x = +.01,  
-            color = "white", size = 2.25) +
+            #nudge_x = +.01,  
+            color = "black", size = 3.5) +
   coord_flip() +
   theme_minimal() +
   xlab("") +
