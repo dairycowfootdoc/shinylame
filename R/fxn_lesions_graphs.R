@@ -19,7 +19,7 @@ mallavg <- denominator %>%
 # count # of lesions/during the year
 ygerror <- data %>% 
   filter(lifexlame >0) %>% # only cows with lesions
-  filter(ftdat < enddat) %>%
+#  filter(ftdat < enddat) %>%
   filter(lact %in% lact_filter) |> 
   mutate(lesion = recode(trimonly, '0'= 1, '1' = 0)) %>% 
   group_by(farm, year) %>% 
@@ -52,7 +52,7 @@ ygerrorall3 <- ygerrorall %>%
 # Graphn1:just 1st case ever for any lesion (ie no other history before)
 yg1error <- data %>% 
   filter(lifexlame == 1) %>% # only cows with lesions
-  filter(ftdat < enddat) %>%
+#  filter(ftdat < enddat) %>%
   filter(lact %in% lact_filter) |> 
   mutate(lesion = recode(trimonly, '0'= 1, '1' = 0)) %>% 
   group_by(farm, year) %>% 
