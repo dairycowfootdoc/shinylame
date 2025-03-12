@@ -69,7 +69,7 @@ ui <- page_sidebar(
     hr(),
     radioButtons(inputId = "lactation", 
                  label = "Select Lactation:",
-                choices = c("All" , "1", "2", "3+")
+                choices = c("all" , "1", "2", "3+")
                 ),
     hr(),
     dateRangeInput(inputId = "date", label = "Analysis Date Range "),
@@ -105,10 +105,13 @@ ui <- page_sidebar(
 
 server <- function(input, output, session) {
   #bs_themer()
+  # set variables used for functions
+  
+
   # create graphs
-  les_graph <- region_lesion_sum_data(denominator = mall,
+  les_graph <- reactive({region_lesion_sum_data(denominator = mall,
                                       data = lame4,
-                                      lctgp = all, lact = c(1:20),
+                                      lctgp = input$lactation, lact = c(1:20),
                                       group = "farm")  |>
     region_les_graph(lesions = "lesion",
                      group = "farm",
@@ -116,6 +119,7 @@ server <- function(input, output, session) {
                      facet_col = year,
                      years = c(2023),
                      farms = c(farms))
+  })
   
   les_graph_inf <- region_lesion_sum_data(denominator = mall,
                                       data = lame4,
