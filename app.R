@@ -28,26 +28,25 @@ pacman::p_load(
 
 # load data
 # denominators
-mall <- import("mall.rds", trust = TRUE) 
+mall <- import("data/mall.rds", trust = TRUE) 
 # data
-lame4 <-import("lame4.rds", trust = TRUE)
+lame4 <-import("data/lame4.rds", trust = TRUE)
 
 # set general vectors used
 # used in lesion function
-all <- c("l1milking", "l2milking", "l3milking", "l4milking", "l5pmilking")
-one <- c("allmilking", "l2milking", "l3milking", "l4milking", "l5pmilking")
-two <- c("allmilking", "l1milking", "l3milking", "l4milking", "l5pmilking")
-three <- c("allmilking", "l2milking", "l1milking", "l4milking", "l5pmilking")
-four  <- c("allmilking", "l2milking", "l3milking", "l1milking", "l5pmilking")
-five <- c("allmilking", "l2milking", "l3milking", "l4milking", "l1milking")
+# all <- c("l1milking", "l2milking", "l3milking", "l4milking", "l5pmilking")
+# one <- c("allmilking", "l2milking", "l3milking", "l4milking", "l5pmilking")
+# two <- c("allmilking", "l1milking", "l3milking", "l4milking", "l5pmilking")
+# three <- c("allmilking", "l2milking", "l1milking", "l4milking", "l5pmilking")
+# four  <- c("allmilking", "l2milking", "l3milking", "l1milking", "l5pmilking")
+# five <- c("allmilking", "l2milking", "l3milking", "l4milking", "l1milking")
 
-les_variables <- c("lesion", "dd", "footrot", "wld",
-                   "soleulcer", "solefract", "hem", "cork", 
-                   "other", "axial",
-                   "toeulcer", "thin", "inf", "noninf", "toe", "injury")
+# les_variables <- c("lesion", "dd", "footrot", "wld",
+#                    "soleulcer", "solefract", "hem", "cork", 
+#                    "other", "axial",
+#                    "toeulcer", "thin", "inf", "noninf", "toe", "injury")
 
-farms <- "example"
-
+# farms <- "example"
 
 # load functions
 source("R/fxn_lesions_graphs.R")
@@ -85,8 +84,8 @@ ui <- page_sidebar(
   
   navset_tab(
   nav_panel("Any Lesions", plotOutput("any")), 
-  nav_panel("Infectious Lesions", "Page B content"), 
-  nav_panel("Non Infectious Lesions", "Page C content"), 
+  nav_panel("Infectious Lesions", plotOutput("inf")), 
+  nav_panel("Non Infectious Lesions", plotOutput("noninf")), 
   
   # Place additional UI elements properly
   header = uiOutput("valueboxes"),
@@ -104,22 +103,50 @@ ui <- page_sidebar(
 )
 
 
-server <- function(input, output) {
+server <- function(input, output, session) {
   #bs_themer()
   # create graphs
-  les_graph <- region_lesion_sum_data(lctgp = all, lact = c(1:20),
+  les_graph <- region_lesion_sum_data(denominator = mall,
+                                      data = lame4,
+                                      lctgp = all, lact = c(1:20),
                                       group = "farm")  |>
     region_les_graph(lesions = "lesion",
+                     group = "farm",
+                     plot_var = farm,
+                     facet_col = year,
+                     years = c(2023),
+                     farms = c(farms))
+  
+  les_graph_inf <- region_lesion_sum_data(denominator = mall,
+                                      data = lame4,
+                                      lctgp = all, lact = c(1:20),
+                                      group = "farm")  |>
+    region_les_graph(lesions = c("footrot", "dd"),
                      group = "farm",
                      plot_var = farm,
                      facet_col = lestype,
                      years = c(2023),
                      farms = c(farms))
   
-  output$any <- renderPlot(les_graph)
-                        
-                          
+  les_graph_noninf <- region_lesion_sum_data(denominator = mall,
+                                          data = lame4,
+                                          lctgp = all, lact = c(1:20),
+                                          group = "farm")  |>
+    region_les_graph(lesions = c("soleulcer", "wld", "solefract"),
+                     group = "farm",
+                     plot_var = farm,
+                     facet_col = lestype,
+                     years = c(2023),
+                     farms = c(farms))
   
+  
+  
+
+  output$any <- renderPlot(les_graph)
+  output$inf <- renderPlot(les_graph_inf)
+  output$noninf <- renderPlot(les_graph_noninf)
+
+
 }
 
 
