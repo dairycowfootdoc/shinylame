@@ -32,21 +32,6 @@ mall <- import("data/mall.rds", trust = TRUE)
 # data
 lame4 <-import("data/lame4.rds", trust = TRUE)
 
-# set general vectors used
-
-# all <- c("l1milking", "l2milking", "l3milking", "l4milking", "l5pmilking")
-# one <- c("allmilking", "l2milking", "l3milking", "l4milking", "l5pmilking")
-# two <- c("allmilking", "l1milking", "l3milking", "l4milking", "l5pmilking")
-# three <- c("allmilking", "l2milking", "l1milking", "l4milking", "l5pmilking")
-# four  <- c("allmilking", "l2milking", "l3milking", "l1milking", "l5pmilking")
-# five <- c("allmilking", "l2milking", "l3milking", "l4milking", "l1milking")
-
-# les_variables <- c("lesion", "dd", "footrot", "wld",
-#                    "soleulcer", "solefract", "hem", "cork", 
-#                    "other", "axial",
-#                    "toeulcer", "thin", "inf", "noninf", "toe", "injury")
-
-# farms <- "example"
 
 # load functions
 source("R/fxn_lesions_graphs.R")
@@ -142,17 +127,6 @@ server <- function(input, output, session) {
     output$temp_data_print <- renderPrint({
       print(graph_data())  # Call temp_data() with parentheses to access the value
     })
-    
-    les_graph_noninf <- region_lesion_sum_data(denominator = mall,
-                                               data = lame4,
-                                               lctgp = all, lact = c(1:20),
-                                               group = "farm")  |>
-      region_les_graph(lesions = c("soleulcer", "wld", "solefract"),
-                       group = "farm",
-                       plot_var = farm,
-                       facet_col = lestype,
-                       years = c(2023),
-                       farms = c(farms))
     
   output$any <- renderPlot({
     les_graph <- region_les_graph(.data = graph_data(), # need to use () as it's a funtion
