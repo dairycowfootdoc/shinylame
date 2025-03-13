@@ -49,7 +49,7 @@ ui <- page_sidebar(
     h4("Options"),
     hr(),
     selectInput(inputId = "Parameter",
-                label = "Select graphing parameter",
+                label = "Select graphing parameter SEASON TBD",
                 c("Overall Incidence", "DIM", "Season"),
     ),
     hr(),
@@ -58,7 +58,7 @@ ui <- page_sidebar(
                 choices = c("all", "1", "2", "3", "4", "5+")
                 ),
     hr(),
-    dateRangeInput(inputId = "date", label = "Analysis Date Range "),
+    dateRangeInput(inputId = "date", label = "Analysis Date Range NOT WORKING"),
     hr(),
     verbatimTextOutput("date"),
     verbatimTextOutput("date1"),
@@ -126,9 +126,11 @@ server <- function(input, output, session) {
     })
     
     dim_data <- reactive({
+      lactation_info <- lactation_mapping[[input$lactation]]
       lact_group <- lactation_info$lact_group
       
-      lame4 |> filter(lact %in% lact_group) 
+      lame4 |> filter(lact == lact_group) |> 
+        mutate(lesion = if_else(trimonly == 1,0,1))
       
     })
     
@@ -138,6 +140,7 @@ server <- function(input, output, session) {
     })
     
   output$any <- renderPlot({
+    if (input$Parameter == "Overall Incidence") {
     les_graph <- region_les_graph(.data = graph_data(), # need to use () as it's a funtion
                                              lesions = c("lesion", 
                                                          "inf", "noninf"),
@@ -146,9 +149,18 @@ server <- function(input, output, session) {
                                              facet_col = year,
                                              years = c(2023, 2024),
                                              farms = c(farms))
+        } else if (input$Parameter == "DIM") {
+      les_graph <- days_graph(.df = dim_data(),
+                              lesion = lesion,
+                              farms = c(farms),
+                              facet_var = year
+                             
+                 )
+        }
     les_graph
     })
   output$inf <- renderPlot({
+    if (input$Parameter == "Overall Incidence") {
     les_graph_inf <- region_les_graph(.data = graph_data(), # need to use () as it's a funtion
                                       lesions = c("footrot", "dd"),
                                       group = "farm",
@@ -156,16 +168,33 @@ server <- function(input, output, session) {
                                       facet_col = year,
                                       years = c(2024),
                                       farms = c(farms))
+    } else if (input$Parameter == "DIM") {
+      les_graph_inf <- days_graph(.df = dim_data(),
+                              lesion = inf,
+                              farms = c(farms),
+                              facet_var = year
+                              
+      )
+    }
     les_graph_inf
   })
   output$noninf <- renderPlot({
-    les_graph_noninf <- region_les_graph(.data = graph_data(), # need to use () as it's a funtion
-                                      lesions = c("soleulcer", "solefract", "wld"),
-                                      group = "farm",
-                                      plot_var = lestype,
-                                      facet_col = year,
-                                      years = c(2024),
-                                      farms = c(farms))
+    if (input$Parameter == "Overall Incidence") {
+      les_graph_noninf <- region_les_graph(.data = graph_data(), # need to use () as it's a funtion
+                                        lesions = c("footrot", "dd"),
+                                        group = "farm",
+                                        plot_var = lestype,
+                                        facet_col = year,
+                                        years = c(2024),
+                                        farms = c(farms))
+    } else if (input$Parameter == "DIM") {
+      les_graph_noninf <- days_graph(.df = dim_data(),
+                                  lesion = noninf,
+                                  farms = c(farms),
+                                  facet_var = year
+                                  
+      )
+    }
     les_graph_noninf
     })
 }
