@@ -26,9 +26,10 @@ mall <- import("data/mall.rds", trust = TRUE)
 lame4 <-import("data/lame4.rds", trust = TRUE)
 
 
-# load functions
-source("R/fxn_lesions_graphs.R")
-source("R/fxn_dim_graphs.R")
+# # load functions
+# not necessary as in the R folder and get loaded
+# source("R/fxn_lesions_graphs.R")
+# source("R/fxn_dim_graphs.R")
 
 # set up
 
