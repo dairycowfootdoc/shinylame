@@ -69,7 +69,7 @@ ui <- page_sidebar(
   
   tags$style(HTML(
     ".navbar { 
-        background-image: url('chute_small.jpg');
+        background-image: url('chute_small.JPG');
         background-size: cover;
         background-position: top;
       }"
