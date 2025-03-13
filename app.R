@@ -71,7 +71,7 @@ ui <- page_sidebar(
     ".navbar { 
         background-image: url('chute_small.JPG');
         background-size: cover;
-        background-position: top;
+        background-position: center;
       }"
   )),
   
