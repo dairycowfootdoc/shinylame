@@ -97,7 +97,7 @@ server <- function(input, output, session) {
   
     # Create a mapping for lactation values
     lactation_mapping <- list(
-      all = list(lactation_value = all, lact_group = c(1:20)),
+      "all" = list(lactation_value = all, lact_group = c(1:20)),
       "1" = list(lactation_value = one, lact_group = c(1)),
       "2" = list(lactation_value = two, lact_group = c(2)),
       "3" = list(lactation_value = three, lact_group = c(3)),
