@@ -88,6 +88,14 @@ ui <- page_sidebar(
   nav_panel("Non Infectious Lesions", plotOutput("noninf")), 
   nav_panel("test", verbatimTextOutput("temp_data_print")),
   
+  tags$style(HTML(
+    ".navbar { 
+        background-image: url('chute_small.jpg');
+        background-size: cover;
+        background-position: top;
+      }"
+  )),
+  
   # Place additional UI elements properly
   header = uiOutput("valueboxes"),
   
